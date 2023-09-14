@@ -10,7 +10,7 @@
     <RootNamespace>TradesByChatt</RootNamespace>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Users\Ryan\Downloads\Quantower\TradingPlatform\v1.134.12\Console.StarterNew.exe</StartProgram>
-    <StartArguments>--address 127.0.0.1 --port 54362</StartArguments>
+    <StartArguments>--address 127.0.0.1 --port 53791</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>C:\Users\Ryan\Downloads\Quantower\TradingPlatform\v1.134.12\..\..\Settings\Scripts\Strategies\TradesByChatt</OutputPath>

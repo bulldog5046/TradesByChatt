@@ -1,19 +1,13 @@
-﻿// Copyright QUANTOWER LLC. © 2017-2023. All rights reserved.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using TradingPlatform.BusinessLayer;
 
 namespace TradesByChatt
 {
-    /// <summary>
-    /// An example of strategy for working with one symbol. Add your code, compile it and run via Strategy Runner panel in the assigned trading terminal.
-    /// Information about API you can find here: http://api.quantower.com
-    /// </summary>
+
 	public class TradesByChatt : Strategy, ICurrentSymbol, ICurrentAccount
     {
         [InputParameter("Symbol", 10)]
@@ -41,22 +35,11 @@ namespace TradesByChatt
         public TradesByChatt()
             : base()
         {
-            // Defines strategy's name and description.
             this.Name = "TradesByChatt";
-            this.Description = "My strategy's annotation";
+            this.Description = "YouTube Live Chat Driven Trading";
         }
 
-        /// <summary>
-        /// This function will be called after creating a strategy
-        /// </summary>
-        protected override void OnCreated()
-        {
-            // Add your code here
-        }
 
-        /// <summary>
-        /// This function will be called after running a strategy
-        /// </summary>
         protected override void OnRun()
         {
             if (CurrentSymbol == null || CurrentAccount == null || CurrentSymbol.ConnectionId != CurrentAccount.ConnectionId)
@@ -69,8 +52,6 @@ namespace TradesByChatt
 
             if (this.CurrentSymbol != null)
             {
-                this.CurrentSymbol.NewQuote += SymbolOnNewQuote;
-                this.CurrentSymbol.NewLast += SymbolOnNewLast;
                 InitializeTimer(TimerIntervalSeconds * 1000);
                 this.countdownTimer.Elapsed += ExecuteVotes;
                 this.timerStarted = DateTime.Now;
@@ -84,20 +65,12 @@ namespace TradesByChatt
 
             }
 
-
-
-            // Add your code here
         }
 
-        /// <summary>
-        /// This function will be called after stopping a strategy
-        /// </summary>
         protected override void OnStop()
         {
             if (this.CurrentSymbol != null)
             {
-                this.CurrentSymbol.NewQuote -= SymbolOnNewQuote;
-                this.CurrentSymbol.NewLast -= SymbolOnNewLast;
                 this.countdownTimer.Elapsed -= ExecuteVotes;
 
                 this.cancellationTokenSource.Cancel();
@@ -105,22 +78,14 @@ namespace TradesByChatt
                 countdownTimer.Stop();
             }
 
-            // Add your code here
         }
 
-        /// <summary>
-        /// This function will be called after removing a strategy
-        /// </summary>
         protected override void OnRemove()
         {
             this.CurrentSymbol = null;
             this.CurrentAccount = null;
-            // Add your code here
         }
 
-        /// <summary>
-        /// Use this method to provide run time information about your strategy. You will see it in StrategyRunner panel in trading terminal
-        /// </summary>
         protected override List<StrategyMetric> OnGetMetrics()
         {
             List<StrategyMetric> result = base.OnGetMetrics();
@@ -144,20 +109,11 @@ namespace TradesByChatt
             return result;
         }
 
-        private void SymbolOnNewQuote(Symbol symbol, Quote quote)
-        {
-            // Add your code here
-        }
-
-        private void SymbolOnNewLast(Symbol symbol, Last last)
-        {
-            // Add your code here
-        }
-
         private void ExecuteVotes(object sender, EventArgs e)
         {
             // reset timer tracking
             this.timerStarted = DateTime.Now;
+
             var votes = voteCollector.GetVoteResults();
             var highestVoteKey = votes.OrderByDescending(v => v.Value).FirstOrDefault().Key;
             var topTwoVotes = votes.OrderByDescending(v => v.Value).Take(2).ToList();
@@ -224,7 +180,7 @@ namespace TradesByChatt
         private void InitializeTimer(double intervalInMilliseconds)
         {
             this.countdownTimer = new System.Timers.Timer(intervalInMilliseconds);
-            this.countdownTimer.AutoReset = true; // Set to true to repeat the timer at the specified interval.
+            this.countdownTimer.AutoReset = true;
         }
 
         public string GetRemainingTime()
@@ -234,7 +190,7 @@ namespace TradesByChatt
             if (remainingMilliseconds < 0) remainingMilliseconds = 0;
 
             TimeSpan remainingTimeSpan = TimeSpan.FromMilliseconds(remainingMilliseconds);
-            return $"{remainingTimeSpan.Minutes:D2}:{remainingTimeSpan.Seconds:D2}"; // Format as MM:SS
+            return $"{remainingTimeSpan.Minutes:D2}:{remainingTimeSpan.Seconds:D2}"; 
         }
 
 

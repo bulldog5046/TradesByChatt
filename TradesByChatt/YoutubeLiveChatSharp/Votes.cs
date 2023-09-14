@@ -47,8 +47,6 @@ public class YoutubeLiveVoteCollector
 
             _fetch.Fetch().ToList().ForEach(c => ProcessComment(c));
 
-            // Your existing code...
-
             await Task.Delay(1000);
         }
     }

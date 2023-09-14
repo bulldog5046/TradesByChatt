@@ -21,18 +21,16 @@ namespace YoutubeLiveChatSharp
 
         public async Task<Comment[]> FetchAsync()
         {
-            // 初回時にchatDataを初期化する
             if (chatData == null) await FirstFetch();
 
-            // Postする
+            // Post
             HttpResponseMessage chat = await FetchChat();
             if (chat == null) return new Comment[0];
             string response = chat.Content.ReadAsStringAsync().Result;
 
-            // パースする
             List<Comment> comments = Parse(response);
 
-            // continuationをアップデート
+            // continuation
             chatData.UpdateContinuation(response);
 
             return comments.ToArray();
@@ -72,20 +70,18 @@ namespace YoutubeLiveChatSharp
 
         private async Task<HttpResponseMessage> FetchChat()
         {
-            // paramを作る
+
             var param = new Dictionary<string, string>()
             {
                 ["key"] = chatData.key
             };
 
-            // データを実際に取ってくる
             var response = await client.PostAsync(
                 "https://www.youtube.com/youtubei/v1/live_chat/get_live_chat?" + "key=" + param["key"],
                 new StringContent(chatData.Build()));
 
-            // OKじゃない場合はnullを返す
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return null;
-            //Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+            
             return response;
         }
 
